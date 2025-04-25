@@ -17,4 +17,9 @@ export const routes: Routes = [
     path: 'orders/:id',
     loadComponent: () => import('./core/components/success-page/order-details/order-details.component').then(c => c.OrderDetailsComponent)
   },
+  {
+    path:'**',
+    redirectTo: 'home',
+    pathMatch: 'full',
+  }
 ];
