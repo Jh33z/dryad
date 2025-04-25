@@ -1,0 +1,30 @@
+<p-card [style]="{ width: '100%', overflow: 'hidden' }">
+  <!-- Image Container with Fixed Height -->
+  <div class="flex justify-center mb-3">
+    <img alt="Card" class="w-auto h-56 object-contain" [src]="productions().imgPath" />
+  </div>
+
+  <!-- Title with Ellipsis for Long Text -->
+  <div class="text-center text-xl font-bold mb-3 px-2">
+    <div class="truncate">{{productions().title}}</div>
+  </div>
+
+  <!-- Attributes Section with Better Spacing and Layout -->
+  <div class="px-3 pb-3">
+    <!-- Attributes Grid Layout -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2">
+      <div class=""><span class="font-medium">სიგრძე:</span> {{productions().attributes.length}}</div>
+      <div class=""><span class="font-medium">სიგანე:</span> {{productions().attributes.width}}</div>
+      <div class=""><span class="font-medium">სიმაღლე:</span> {{productions().attributes.height}}</div>
+    </div>
+
+    <!-- Color with Ellipsis -->
+    <div class="truncate mb-3"><span class="font-medium">ფერი:</span> {{productions().attributes.color}}</div>
+  </div>
+
+  <!-- Button Section with Consistent Spacing -->
+  <div class="flex justify-center pb-3">
+    <p-button label="დაიწყე" variant="text" [raised]="true" severity="warn" (click)="onPurchaseClick(productions())" />
+  </div>
+</p-card>
+

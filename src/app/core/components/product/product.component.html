@@ -1,0 +1,248 @@
+<!-- Product Details Page Component -->
+<div class="container mx-auto px-4 py-8">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="flex justify-center items-center h-64">
+    <p-progressSpinner></p-progressSpinner>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="bg-red-100 text-red-600 p-4 rounded-lg mb-6">
+    {{ errorMessage }}
+  </div>
+
+  <ng-container *ngIf="!isLoading && !errorMessage">
+    <p-breadcrumb [model]="breadcrumbItems" [home]="home" styleClass="mb-6 border-none bg-transparent"></p-breadcrumb>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Left: Product Image Gallery -->
+      <div class="flex flex-col">
+        <!-- Main Product Image -->
+        <div class="bg-gray-50 rounded-lg overflow-hidden mb-4">
+          <p-galleria [value]="productImages" [numVisible]="5" [containerStyle]="{'max-width': '100%'}"
+                      [showThumbnails]="true">
+            <ng-template pTemplate="item" let-item>
+              <div class="flex justify-center p-4">
+                <img [src]="item.src" [alt]="item.alt" class="w-auto h-96 object-contain"/>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="thumbnail" let-item>
+              <div class="flex justify-center p-1">
+                <img [src]="item.src" [alt]="item.alt" class="w-16 h-16 object-cover cursor-pointer"/>
+              </div>
+            </ng-template>
+          </p-galleria>
+        </div>
+      </div>
+
+      <div class="flex flex-col">
+        <h1 class="text-3xl font-bold mb-2">{{ product.title }}</h1>
+        <p class="text-gray-500 mb-4">კოდი: {{ product.id }}</p>
+        <p-table [value]="product.craftsmens || []"
+                 [tableStyle]="{ 'min-width': '15rem' }"
+                 [(selection)]="selectedCraftsman"
+                 dataKey="id"
+                 selectionMode="single"
+                 (onRowSelect)="onRowSelect($event)">
+          <ng-template pTemplate="caption">
+            <div class="flex items-center justify-between">
+              <span class="text-xl font-bold">ხელოსანი</span>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th>ფასი</th>
+              <th>სახელი</th>
+              <th>გვარი</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-craftsman let-selected="selected">
+            <tr [pSelectableRow]="craftsman" [ngClass]="{'bg-green-100': selected}">
+              <td>{{ craftsman.price | currency: '₾' }}</td>
+              <td>{{ craftsman.name }}</td>
+              <td>{{ craftsman.surname }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+        <div *ngIf="selectedCraftsman" class="mt-4">
+          <h3>არჩეული ხელოსანი</h3>
+          <p>სახელი:  <span class="font-bold">{{ selectedCraftsman.name }} {{ selectedCraftsman.surname }}</span></p>
+          <p>ფასი: <span class="font-bold">{{ selectedCraftsman.price | currency: '₾' }}</span></p>
+        </div>
+
+        <!-- Color Options -->
+        <div class="mb-6">
+          <h3 class="text-lg font-medium mb-2">ფერი: {{ selectedColor }}</h3>
+          <div class="flex gap-2">
+            <div *ngFor="let color of colorOptions"
+                 [style.backgroundColor]="color.hex"
+                 class="w-8 h-8 rounded-full cursor-pointer border-2"
+                 [class.border-primary]="selectedColor === color.name"
+                 [class.border-transparent]="selectedColor !== color.name"
+                 (click)="selectColor(color.name)">
+            </div>
+          </div>
+        </div>
+
+        <!-- Dimensions -->
+        <div class="mb-6">
+          <h3 class="text-lg font-medium mb-2">ზომები</h3>
+          <div class="bg-gray-50 p-4 rounded-lg grid grid-cols-3 gap-4">
+            <div>
+              <p class="text-gray-500">სიგრძე</p>
+              <p class="font-medium">{{ product.attributes.length }}</p>
+            </div>
+            <div>
+              <p class="text-gray-500">სიგანე</p>
+              <p class="font-medium">{{ product.attributes.width }}</p>
+            </div>
+            <div>
+              <p class="text-gray-500">სიმაღლე</p>
+              <p class="font-medium">{{ product.attributes.height }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quantity Selector -->
+<!--        <div class="mb-6">-->
+<!--          <h3 class="text-lg font-medium mb-2">რაოდენობა</h3>-->
+<!--          <div class="flex items-center">-->
+<!--            <p-inputNumber [(ngModel)]="quantity" [showButtons]="true" buttonLayout="horizontal"-->
+<!--                           spinnerMode="horizontal" [min]="1" [max]="100"-->
+<!--                           decrementButtonClass="p-button-text" incrementButtonClass="p-button-text"-->
+<!--                           incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus"-->
+<!--                           styleClass="w-32">-->
+<!--            </p-inputNumber>-->
+<!--          </div>-->
+<!--        </div>-->
+
+        <!-- Actions Buttons -->
+        <div class="flex flex-col sm:flex-row gap-3 mb-6">
+          <p-button label="შეიძინე ახლავე" icon="pi pi-shopping-cart" styleClass="w-full sm:w-auto" severity="success"
+                    (onClick)="buyNow()"></p-button>
+
+          <p-button icon="pi pi-heart" styleClass="p-button-rounded p-button-text" [outlined]="true"></p-button>
+        </div>
+
+        <!-- Delivery Information -->
+        <div class="bg-gray-50 p-4 rounded-lg mb-6">
+          <div class="flex items-center mb-2">
+            <i class="pi pi-truck mr-2 text-primary"></i>
+            <h3 class="text-lg font-medium">მიტანის სერვისი</h3>
+          </div>
+          <p class="text-gray-600">თბილისში - 24 საათში</p>
+          <p class="text-gray-600">რეგიონებში - 3 სამუშაო დღეში</p>
+        </div>
+
+        <!-- Warranty Info -->
+        <div class="bg-gray-50 p-4 rounded-lg mb-6">
+          <div class="flex items-center mb-2">
+            <i class="pi pi-shield mr-2 text-primary"></i>
+            <h3 class="text-lg font-medium">გარანტია</h3>
+          </div>
+          <p class="text-gray-600">{{ product.warranty || '12 თვე' }} გარანტია</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Details Tabs -->
+    <div class="mt-12">
+      <p-tabView>
+        <!-- Description Tab -->
+        <p-tabPanel header="აღწერა">
+          <div class="py-4 prose max-w-none">
+            <h3 class="text-xl font-medium mb-4">პროდუქტის აღწერა</h3>
+            <div [innerHTML]="product.description"></div>
+          </div>
+        </p-tabPanel>
+
+        <!-- Materials Tab -->
+        <p-tabPanel header="მასალები">
+          <div class="py-4">
+            <h3 class="text-xl font-medium mb-4">მასალები და მოვლა</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div *ngFor="let material of product.materials">
+                <h4 class="text-lg font-medium mb-2">{{ material.name }}</h4>
+                <p class="text-gray-600">{{ material.description }}</p>
+              </div>
+            </div>
+            <div class="mt-6">
+              <h4 class="text-lg font-medium mb-2">მოვლის ინსტრუქცია</h4>
+              <ul class="list-disc pl-5 text-gray-600">
+                <li *ngFor="let instruction of product.careInstructions" class="mb-1">{{ instruction }}</li>
+              </ul>
+            </div>
+          </div>
+        </p-tabPanel>
+
+        <!-- Reviews Tab -->
+        <p-tabPanel header="შეფასებები">
+          <div class="py-4">
+            <div class="flex flex-col md:flex-row gap-6">
+              <!-- Review Summary -->
+              <div class="flex-1">
+                <div class="flex items-center mb-4">
+                  <span class="text-3xl font-bold mr-2">{{ product.rating }}</span>
+                  <p-rating [ngModel]="product.rating" [readonly]="true"></p-rating>
+                  <span class="ml-2 text-gray-500">({{ product.reviewCount }} შეფასება)</span>
+                </div>
+
+                <!-- Rating Breakdown -->
+                <div *ngFor="let star of [5,4,3,2,1]" class="flex items-center mb-2">
+                  <span class="w-6 text-right mr-2">{{ star }}</span>
+                  <i class="pi pi-star-fill text-yellow-400 mr-2"></i>
+                  <p-progressBar [value]="getRatingPercentage(star)" styleClass="h-2 w-48"></p-progressBar>
+                  <span class="ml-2 text-gray-500">{{ getRatingCount(star) }}</span>
+                </div>
+              </div>
+
+              <!-- Review List -->
+              <div class="flex-2">
+                <h3 class="text-xl font-medium mb-4">მომხმარებლების შეფასებები</h3>
+                <div *ngIf="product.reviews && product.reviews.length > 0">
+                  <div *ngFor="let review of product.reviews" class="mb-6 border-b pb-4">
+                    <div class="flex justify-between mb-2">
+                      <div>
+                        <p-rating [ngModel]="review.rating" [readonly]="true"></p-rating>
+                        <h4 class="font-medium mt-1">{{ review.title }}</h4>
+                      </div>
+                      <span class="text-gray-500 text-sm">{{ review.date | date }}</span>
+                    </div>
+                    <p class="mb-2">{{ review.comment }}</p>
+                    <p class="text-gray-500 text-sm">{{ review.author }}</p>
+                  </div>
+                </div>
+                <div *ngIf="!product.reviews || product.reviews.length === 0" class="text-gray-500">
+                  ამ პროდუქტს ჯერ არ აქვს შეფასებები
+                </div>
+
+                <!-- Write Review Button -->
+                <p-button label="დაწერე შეფასება" icon="pi pi-pencil" styleClass="mt-4"></p-button>
+              </div>
+            </div>
+          </div>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+
+    <!-- Related Products Section -->
+    <div class="mt-16" *ngIf="relatedProducts && relatedProducts.length > 0">
+      <h2 class="text-2xl font-bold mb-6">მსგავსი პროდუქტები</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div *ngFor="let related of relatedProducts"
+             class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+          <div class="bg-gray-50 p-4 flex justify-center">
+            <img [src]="related.imgPath" [alt]="related.title" class="h-40 w-auto object-contain"/>
+          </div>
+          <div class="p-4">
+            <h3 class="font-medium truncate">{{ related.title }}</h3>
+            <div class="flex justify-between items-center mt-2">
+              <span class="font-bold text-primary">{{ related.price | currency:'₾':'symbol':'1.2-2' }}</span>
+              <p-button icon="pi pi-shopping-cart" styleClass="p-button-sm p-button-rounded"></p-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

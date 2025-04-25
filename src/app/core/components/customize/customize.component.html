@@ -1,0 +1,86 @@
+<!-- customize.component.html -->
+<div class="bg-gray-50 min-h-screen py-8">
+  <div class="container mx-auto px-4">
+    <!-- Header Section -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-800">მოარგეთ თქვენი პროდუქტი</h1>
+      <p class="text-gray-600 mt-2">ნახეთ საინსტრუქციო ვიდეო და მოარგეთ თქვენი არჩევანი ქვემოთ</p>
+    </div>
+
+    <!-- Main Content with Video -->
+    <div class="flex flex-col lg:flex-row gap-8">
+      <!-- Video Section (60% width on large screens) -->
+      <div class="lg:w-3/5">
+        <div class="bg-black rounded-lg shadow-lg overflow-hidden">
+          <!-- Video Player -->
+          <div class="aspect-w-16 aspect-h-9 relative">
+            <!-- Replace with actual video implementation -->
+            <video
+              #videoPlayer
+              class="w-full h-full object-cover"
+              controls
+              poster="assets/images/video-thumbnail.jpg">
+              <source src="assets/images/video.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+
+
+        </div>
+
+      </div>
+
+      <!-- Customization Controls (40% width on large screens) -->
+      <div class="lg:w-2/5">
+        <div class="bg-[#D3D3D3] rounded-lg shadow-lg p-6">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-6">შეარჩიეთ ფერი და ზომა</h2>
+
+          <!-- Color Selection -->
+          <div class="mb-6">
+            <h3 class="text-gray-700 font-medium mb-3">აირჩიე ფერი</h3>
+            <div class="flex flex-wrap gap-3">
+              <button
+                *ngFor="let color of colors"
+                [style.background-color]="color.hex"
+                class="w-10 h-10 rounded-full border-2"
+                [class.border-blue-500]="color.selected"
+                [class.border-transparent]="!color.selected"
+                (click)="selectColor(color)">
+              </button>
+            </div>
+          </div>
+
+          <!-- Size Selection -->
+          <div class="mb-6">
+            <h3 class="text-gray-700 font-medium mb-3">აირჩიე ზომა</h3>
+            <div class="flex flex-wrap gap-2">
+              <button
+                *ngFor="let size of sizes"
+                class="px-4 py-2 border rounded-md"
+                [class.bg-blue-500]="size.selected"
+                [class.text-white]="size.selected"
+                [class.border-gray-300]="!size.selected"
+                [class.bg-white]="!size.selected"
+                (click)="selectSize(size)">
+                {{ size.name }}
+              </button>
+            </div>
+          </div>
+
+
+
+
+
+          <!-- Price and Add to Cart -->
+          <div class="mt-8">
+            <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition duration-200"
+            (click)="onPurchaseClick()"
+            >
+              შეიძინე
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

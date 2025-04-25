@@ -1,0 +1,139 @@
+<div class="bg-gray-50 min-h-screen py-8">
+  <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+    <!-- Order Header -->
+    <div class="bg-green-600 text-white p-6">
+      <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-bold">შეკვეთის დეტალები</h1>
+        <div class="text-right">
+          <p class="text-lg font-medium">შეკვეთის #{{ orderNumber }}</p>
+          <p class="text-sm">{{ currentDate | date:'yyyy-MM-dd' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Overview -->
+    <div class="p-6 border-b" *ngIf="product$ | async as product">
+      <div class="flex flex-col md:flex-row gap-6">
+        <!-- Product Image -->
+        <div class="md:w-1/3">
+          <img [src]="product.imgPath" [alt]="product.title" class="w-full h-auto rounded-md">
+        </div>
+
+        <!-- Product Info -->
+        <div class="md:w-2/3">
+          <h2 class="text-xl font-bold mb-2">{{ product.title }}</h2>
+
+          <div class="flex flex-col mb-4" *ngIf="craftsman$ | async as craftsman">
+            <div class="flex items-center mb-2">
+              <span class="text-2xl font-bold text-green-600 mr-2">₾{{ craftsman.price }}</span>
+              <span class="text-sm bg-green-100 text-green-800 px-2 py-1 rounded">ხელმისაწვდომი</span>
+            </div>
+            <div class="flex items-baseline">
+              <h3 class="text-lg font-medium mr-2">{{ craftsman.name }}</h3>
+              <h3 class="text-lg font-medium text-gray-700">{{ craftsman.surname }}</h3>
+            </div>
+            <p class="text-sm text-gray-500 mt-1">ოსტატი</p>
+          </div>
+
+          <!-- Rating -->
+          <div class="flex items-center mb-4">
+            <div class="flex text-yellow-400">
+              <ng-container *ngFor="let i of [1,2,3,4,5]">
+                <svg *ngIf="i <= Math.floor(product.rating)" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                </svg>
+                <svg *ngIf="i > Math.floor(product.rating) && i <= product.rating" class="w-5 h-5" viewBox="0 0 20 20">
+                  <defs>
+                    <linearGradient id="halfStar">
+                      <stop offset="50%" stop-color="currentColor"/>
+                      <stop offset="50%" stop-color="#e5e7eb"/>
+                    </linearGradient>
+                  </defs>
+                  <path fill="url(#halfStar)" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                </svg>
+                <svg *ngIf="i > product.rating" class="w-5 h-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                </svg>
+              </ng-container>
+            </div>
+            <span class="text-gray-600 ml-2">{{ product.rating }} ({{ product.reviewCount }} შეფასება)</span>
+          </div>
+
+          <!-- Warranty -->
+          <div class="flex items-center mb-4">
+            <svg class="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+            </svg>
+            <span>გარანტია: {{ product.warranty }}</span>
+          </div>
+
+          <!-- Attributes -->
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div class="flex items-center">
+              <svg class="w-5 h-5 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5"></path>
+              </svg>
+              <span>ზომა: {{ product.attributes.length }} × {{ product.attributes.width }} × {{ product.attributes.height }}</span>
+            </div>
+            <div class="flex items-center">
+              <svg class="w-5 h-5 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+              </svg>
+              <span>ფერი: {{ product.attributes.color }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Materials Section -->
+    <div class="p-6 border-b" *ngIf="product$ | async as product">
+      <h3 class="text-lg font-bold mb-4">მასალები</h3>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div *ngFor="let material of product.materials" class="bg-gray-50 p-4 rounded-md">
+          <h4 class="font-bold mb-1">{{ material.name }}</h4>
+          <p class="text-gray-600">{{ material.description }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Care Instructions -->
+    <div class="p-6 border-b" *ngIf="product$ | async as product">
+      <h3 class="text-lg font-bold mb-4">მოვლის ინსტრუქციები</h3>
+      <ul class="list-disc pl-5 space-y-2">
+        <li *ngFor="let instruction of product.careInstructions" class="text-gray-700">
+          {{ instruction }}
+        </li>
+      </ul>
+    </div>
+
+    <!-- Order Summary Section -->
+    <div class="p-6" *ngIf="craftsman$ | async as craftsman">
+      <h3 class="text-lg font-bold mb-4">შეკვეთის შეჯამება</h3>
+      <div class="bg-gray-50 p-4 rounded-md">
+        <div class="flex justify-between mb-2">
+          <span>პროდუქტი (1x)</span>
+          <span>₾{{ craftsman.price }}</span>
+        </div>
+        <div class="flex justify-between mb-2">
+          <span>მიტანა</span>
+          <span>₾5.00</span>
+        </div>
+        <div class="h-px bg-gray-300 my-2"></div>
+        <div class="flex justify-between font-bold text-lg">
+          <span>ჯამი</span>
+          <span>₾{{ (craftsman.price + 5).toFixed(2) }}</span>
+        </div>
+      </div>
+
+      <!-- Back to Homepage Button -->
+      <div class="mt-6 text-center">
+        <button
+          (click)="goToHomePage()"
+          class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
+          მთავარ გვერდზე დაბრუნება
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

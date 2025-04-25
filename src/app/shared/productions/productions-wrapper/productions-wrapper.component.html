@@ -1,0 +1,10 @@
+<div class="flex flex-col gap-10">
+  <ng-content></ng-content>
+  <div class="p-2">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      @for (prod of productionsData(); track $index) {
+        <app-productions-card [productions]="prod"></app-productions-card>
+      }
+    </div>
+  </div>
+</div>
